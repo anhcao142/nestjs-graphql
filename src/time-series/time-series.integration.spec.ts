@@ -13,7 +13,14 @@ describe('TimeSeriesModule (e2e)', () => {
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
-        ConfigModule.forRoot({ isGlobal: true }),
+        ConfigModule.forRoot({
+          isGlobal: true,
+          load: [
+            () => ({
+              ALPHA_VANTAGE_API_KEY: 'demo',
+            }),
+          ],
+        }),
         TimeSeriesModule,
         GraphQLModule.forRoot<ApolloDriverConfig>({
           driver: ApolloDriver,

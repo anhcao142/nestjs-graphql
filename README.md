@@ -4,31 +4,35 @@ This project demonstrates a simple CRUD operation using the NestJS framework wit
 
 ## Table of Contents
 
-- [Requirements](#requirements)
-- [Setup](#setup)
-- [Running the app](#running-the-app)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+  - [Cloning the Project](#cloning-the-project)
+  - [Setting Environment Variables](#setting-environment-variables)
+  - [Installing Dependencies](#installing-dependencies)
+- [Running the Application](#running-the-application)
+- [Running Tests](#running-tests)
 - [GraphQL Resolvers](#graphql-resolvers)
-- [Usage](#usage)
+- [Example Usage](#example-usage)
 
-## Requirements
+## Prerequisites
 
 - Node.js (v20.0.0 or later)
 - npm / yarn
 - Docker (optional)
 
-## Setup
+## Getting Started
 
-### Clone the project
+### Cloning the Project
 
-Clone the repository and navigate into the project directory:
+To get started, clone the repository and navigate into the project directory:
 ```
-git clone https://github.com/your_username/your_repo_name.git
-cd your_repo_name
+git clone https://github.com/anhcao142/nestjs-graphql.git
+cd nestjs-graphql
 ```
 
-### Configuration
+### Setting Environment Variables
 
-You need to set your Alpha Vantage API Key as an environment variable. Create a `.env` file in the root directory and add the following:
+You need to set your Alpha Vantage API Key as an environment variable. Create a .env file in the root directory and add the following:
 
 ```
 ALPHA_VANTAGE_API_KEY=your_alpha_vantage_api_key
@@ -36,7 +40,7 @@ ALPHA_VANTAGE_API_KEY=your_alpha_vantage_api_key
 
 Replace `your_alpha_vantage_api_key` with your actual API key.
 
-### Install dependencies
+### Installing Dependencies
 
 Use npm or yarn to install the dependencies:
 
@@ -50,9 +54,11 @@ or
 yarn
 ```
 
-## Running the app
+## Running the Application
 
-### Using Docker:
+You can run the application with or without Docker:
+
+### With Docker:
 
 Build the Docker image and start the container:
 
@@ -64,7 +70,7 @@ This will build the Docker image and start the container. The app will be runnin
 
 ### Without Docker:
 
-To start the app, run:
+You can also start the application directly:
 
 ```
 npm run start
@@ -78,13 +84,57 @@ yarn start
 
 The app will be running on [http://localhost:3000](http://localhost:3000).
 
+## Running Tests
+
+The project includes automated tests using Jest. You can run these tests with:
+
+```
+npm test
+```
+
+or
+
+```
+yarn test
+```
+
+To continuously run tests on file changes, you can use:
+
+```
+npm run test:watch
+```
+
+or
+
+```
+yarn test:watch
+```
+
+To generate a coverage report, use:
+
+```
+npm run test:cov
+```
+
+or
+
+```
+yarn test:cov
+```
+
 ## GraphQL Resolvers
 
 The application has a GraphQL resolver to query stock price data from the Alpha Vantage API.
 
-- `getStockPrice`: Fetches historical market data based on ticker symbol and all supported parameters in the API document.
+- `fetchIntradayData`: Retrieves intraday OHLCV "candles" data for a given equity, based on the ticker symbol and applicable parameters as defined in the API documentation. This includes both real-time and historical data, accounting for market splits and dividends.
 
-## Usage
+- `fetchDailyData`: Retrieves raw daily 'candles' data for a specified equity, using the ticker symbol and relevant parameters from the API documentation.
+
+- `fetchWeeklyData`: Fetches weekly 'candles' data for a specified equity, including data for the last trading day each week. This follows the same parameters and historical coverage as the daily data retrieval.
+
+- `fetchMonthlyData`: Fetches monthly 'candles' data for a specified equity, including data for the last trading day each month. This follows the same parameters and historical coverage as the daily data retrieval.
+
+## Example Usage
 
 You can use any GraphQL client to send queries to the server. Navigate to `http://localhost:3000/graphql` to access the GraphQL playground.
 
@@ -92,17 +142,30 @@ Here is an example query:
 
 ```
 query {
-  getStockPrice(symbol: "IBM", interval: "5min", outputSize: "compact") {
-    open
-    high
-    low
-    close
-    volume
+  fetchIntradayData(symbol: "IBM", interval: FIVE_MIN, outputSize: COMPACT) {
+    metadata {
+      information
+      symbol
+      lastRefreshed
+      interval
+      outputSize
+      timeZone
+    }
+    timeSeries {
+      time
+      data {
+        open
+        high
+        low
+        close
+        volume
+      }
+    }
   }
 }
 ```
 
-Replace "IBM" with your desired stock symbol, "5min" with the desired interval, and "compact" with the desired output size.
+Replace "IBM" with your desired stock symbol, FIVE_MIN with the desired interval (ONE_MIN, FIFTEEN_MIN, THIRTY_MIN and SIXTY_MIN), and COMPACT with FULL for the desired output size.
 
 ## Conclusion
 

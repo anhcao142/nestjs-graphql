@@ -99,9 +99,7 @@ export class TimeSeriesService {
     }
 
     if (month) {
-      console.log(month);
       validateMonth(month);
-      console.log(month);
     }
 
     const query = {
@@ -154,7 +152,6 @@ export class TimeSeriesService {
     };
 
     const { rawMetadata, rawTimeSeries } = await this.executeQuery(query);
-    console.log(rawMetadata);
     const metadata = {
       information: rawMetadata['1. Information'],
       symbol: rawMetadata['2. Symbol'],
