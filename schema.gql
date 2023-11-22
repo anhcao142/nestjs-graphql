@@ -1,0 +1,69 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type MetaData {
+  information: String!
+  symbol: String!
+  lastRefreshed: String!
+  outputSize: String!
+  timeZone: String!
+}
+
+type SeriesData {
+  open: String!
+  high: String!
+  low: String!
+  close: String!
+  volume: String!
+}
+
+type TimeSeries {
+  time: String!
+  data: SeriesData!
+}
+
+type TimeSeriesResult {
+  metadata: MetaData!
+  timeSeries: [TimeSeries!]!
+}
+
+type MetaDataWithInterval {
+  information: String!
+  symbol: String!
+  lastRefreshed: String!
+  interval: String!
+  outputSize: String!
+  timeZone: String!
+}
+
+type TimeSeriesIntradayResult {
+  metadata: MetaDataWithInterval!
+  timeSeries: [TimeSeries!]!
+}
+
+type Query {
+  fetchIntradayData(symbol: String!, interval: Interval!, adjusted: Boolean, extended_hours: Boolean, month: String, outputSize: OutputSize, dataType: DataType, apiKey: String): TimeSeriesIntradayResult!
+  fetchDailyData(symbol: String!, outputSize: OutputSize, dataType: DataType, apiKey: String): TimeSeriesResult!
+  fetchWeeklyData(symbol: String!, outputSize: OutputSize, dataType: DataType, apiKey: String): TimeSeriesResult!
+  fetchMonthlyData(symbol: String!, outputSize: OutputSize, dataType: DataType, apiKey: String): TimeSeriesResult!
+}
+
+"""Interval for time series data"""
+enum Interval {
+  ONE_MIN
+  FIVE_MIN
+  FIFTEEN_MIN
+  THIRTY_MIN
+  SIXTY_MIN
+}
+
+enum OutputSize {
+  COMPACT
+  FULL
+}
+
+enum DataType {
+  JSON
+  CSV
+}
